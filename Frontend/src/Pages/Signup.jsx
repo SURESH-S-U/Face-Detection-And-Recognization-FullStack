@@ -30,7 +30,7 @@ function SignUp() {
       <div className="signup-card">
         <h1>Sign Up</h1>
         <input 
-          type="text" 
+          type="text"
           placeholder="Faculty ID" 
           value={facultyId} 
           onChange={(e) => setFacultyId(e.target.value)} 
@@ -38,7 +38,7 @@ function SignUp() {
         />
         <input 
           type="text" 
-          placeholder="Username" 
+          placeholder="Username"
           value={username} 
           onChange={(e) => setUsername(e.target.value)} 
         />
