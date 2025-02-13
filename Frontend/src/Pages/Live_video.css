@@ -12,7 +12,8 @@ html, body {
   gap: 20px;
   background-color: #0d1b56;
   width: 100%;
-  min-height: 100vh; 
+  min-height: 50vh;
+  max-width: 200vh;
   align-items: center;
 }
 
@@ -23,16 +24,18 @@ html, body {
   align-items: center;
   position: relative;
   right: 100px;
+  margin-left: 150px;
 }
 
 .left-side h1{
   font-size: 50px;
+  margin-top: 20px;
 }
 
 /* Video Box */
 .video-slot {
-  width: 1000px;
-  height: 600px;
+  width: 800px;
+  height: 500px;
   background-color: #ddd;
   display: flex;
   align-items: center;
@@ -94,7 +97,7 @@ html, body {
   width: 100%;
   max-width: 500px;
   position: relative;
-  bottom: 180px;
+  bottom: 200px;
 }
 
 /* Table Header */
