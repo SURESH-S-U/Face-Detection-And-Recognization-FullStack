@@ -1,6 +1,5 @@
 # Face-Detection-FullStack
 
-# Face Detection and Student Roll Number Recognition using YOLOv8
 
 This project is a full stack application that uses a YOLOv8 object detection model for face detection via a surveillance camera and fetches students' roll numbers. The frontend is built with React, and the backend uses FastAPI with MongoDB as the database.
 
