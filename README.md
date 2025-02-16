@@ -146,3 +146,56 @@ face-detection-yolo/
 
 > *This project is part of my AI and Data Science coursework at Bannari Amman Institute of Technology.*
 
+API Endpoints
+
+1. Video Streaming
+
+Endpoint: GET /video_feed
+
+Provides an MJPEG stream of live video with face detection.
+
+2. Detected Faces
+
+Endpoint: GET /detected_faces
+
+Returns a JSON response with detected face names and timestamps.
+
+Example Response:
+
+{
+  "faces": [
+    {"name": "John Doe", "timestamp": "2025-02-16 14:30:00"}
+  ]
+}
+
+CORS Configuration
+
+The backend allows cross-origin requests from all sources (*) to enable frontend communication. Modify this in main.py for enhanced security:
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5174"],  # Change this to match your frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+Deployment
+
+To deploy the backend on a server:
+
+Use a process manager like pm2 or systemd.
+
+Configure a reverse proxy (e.g., Nginx) for better performance.
+
+Troubleshooting
+
+Video not loading? Ensure your camera is accessible and not used by another application.
+
+CORS errors? Check that the frontend URL is properly added to allow_origins.
+
+Recognition issues? Verify that the dataset is properly trained and embeddings are correctly stored.
+
+License
+
+This project is licensed under the MIT License.
