@@ -14,13 +14,12 @@ from datetime import datetime
 
 app = FastAPI()
 
-# Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change to ["http://localhost:5174"] for security
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 class CameraStream:
@@ -67,7 +66,6 @@ class CameraStream:
         if self.capture is not None:
             self.capture.release()
 
-
 class FaceRecognitionSystem:
     def __init__(self, dataset_path="dataset", threshold=0.4, embeddings_file="face_embeddings.pkl"):
         self.threshold = threshold
@@ -75,6 +73,7 @@ class FaceRecognitionSystem:
         self.app.prepare(ctx_id=0, det_size=(640, 640))
         self.embeddings_file = embeddings_file
         self.known_faces, self.known_labels = self.load_embeddings(dataset_path)
+        self.last_detection_times = {}
 
     def load_embeddings(self, dataset_path):
         dataset_path = Path(dataset_path)
@@ -87,7 +86,7 @@ class FaceRecognitionSystem:
         known_labels = []
         for student_folder in dataset_path.iterdir():
             if student_folder.is_dir():
-                student_name = student_folder.stem  # Extract folder name as label
+                student_name = student_folder.stem
                 for img_path in student_folder.glob("*.jpg"):
                     img = cv2.imread(str(img_path))
                     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -117,51 +116,47 @@ class FaceRecognitionSystem:
 
     def process_frame(self, frame):
         faces = self.app.get(frame)
-        detected_faces = []
+        current_detected_faces = []
         for face in faces:
             x1, y1, x2, y2 = face.bbox.astype(int)
             label, confidence = self.recognize_face(face.embedding)
             
-            detected_faces.append({
-                "name": label,  # Send name instead of roll number
-                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            })
+            current_time = datetime.now()
+            if label != "Unknown":
+                last_detected = self.last_detection_times.get(label, None)
+                if last_detected is None or (current_time - last_detected).total_seconds() > 300:
+                    detected_faces.append({"name": label, "timestamp": current_time.strftime("%Y-%m-%d %H:%M:%S")})
+                    self.last_detection_times[label] = current_time
             
             color = (0, 255, 0) if label != "Unknown" else (0, 0, 255)
             cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
             cv2.putText(frame, f"{label} ({confidence:.2f})", (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
-        return frame, detected_faces
-
+        return frame, current_detected_faces
 
 stream = CameraStream(0)
 stream.start()
 face_system = FaceRecognitionSystem()
 detected_faces = []
 
-
 def generate_frames():
-    global detected_faces
     while True:
         ret, frame = stream.read()
         if not ret:
             break
-        frame, detected_faces = face_system.process_frame(frame)
+        frame, _ = face_system.process_frame(frame)
         _, buffer = cv2.imencode('.jpg', frame)
         frame_bytes = buffer.tobytes()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
-
 @app.get("/video_feed")
 async def video_feed():
     return StreamingResponse(generate_frames(), media_type="multipart/x-mixed-replace; boundary=frame")
 
-
 @app.get("/detected_faces")
 async def get_detected_faces():
     return {"faces": detected_faces}
-
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)

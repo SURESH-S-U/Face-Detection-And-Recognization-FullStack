@@ -21,17 +21,14 @@ function Live_video() {
       const fetchFaces = () => {
         axios.get(`${backendUrl}/detected_faces`)
           .then(response => {
-            console.log("API Response:", response.data); // Debugging API response
             if (response.data && response.data.faces) {
               setDetectedFaces(response.data.faces);
-              console.log("Updated State (Detected Faces):", response.data.faces);
-            } else {
-              console.warn("Unexpected API response format:", response.data);
             }
           })
           .catch(err => console.error("Error fetching faces:", err));
       };
 
+      fetchFaces(); // Initial fetch when camera turns on
       const interval = setInterval(fetchFaces, 3000);
       return () => clearInterval(interval);
     }
@@ -47,10 +44,6 @@ function Live_video() {
               src={videoSrc}
               alt="Live Video Feed"
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              onError={(e) => {
-                console.error("Error loading video feed", e);
-                alert("Error loading video feed. Check backend service.");
-              }}
             />
           ) : (
             <p>Camera Off</p>
@@ -90,4 +83,4 @@ function Live_video() {
   );
 }
 
-export default Live_video; 
+export default Live_video;
