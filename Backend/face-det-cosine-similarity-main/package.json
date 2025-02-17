@@ -1,0 +1,12 @@
+{
+  "name": "face-det-cosine-similarity-main",
+  "version": "1.0.0",
+  "description": "## Create a Virtual Environment",
+  "main": "index.js",
+  "scripts": {
+    "start": "uvicorn live_detect:app --reload"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
