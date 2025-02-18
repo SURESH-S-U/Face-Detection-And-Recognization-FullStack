@@ -20,7 +20,6 @@ function SignUp() {
       return;
     }
 
-    // Simulate a sign-up process (you can replace this with API integration)
     alert("Sign-up successful! Redirecting to login...");
     navigate("/");
   };
