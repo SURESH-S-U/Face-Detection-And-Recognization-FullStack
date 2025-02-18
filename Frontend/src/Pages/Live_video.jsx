@@ -28,7 +28,7 @@ function Live_video() {
           .catch(err => console.error("Error fetching faces:", err));
       };
 
-      fetchFaces(); // Initial fetch when camera turns on
+      fetchFaces(); // Initial fetch when camera turns on.
       const interval = setInterval(fetchFaces, 3000);
       return () => clearInterval(interval);
     }
