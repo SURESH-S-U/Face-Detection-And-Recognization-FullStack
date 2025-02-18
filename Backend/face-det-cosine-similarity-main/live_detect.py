@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
-from insightface.app import FaceAnalysis
 import pickle
+from insightface.app import FaceAnalysis
 from pathlib import Path
 import time
 from fastapi import FastAPI
