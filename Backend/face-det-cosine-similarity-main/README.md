@@ -41,3 +41,19 @@ python live_detect.py --dataset dataset_path --source "http://ip-address of the 
 ```
 
 
+
+
+
+Command Prompt
+
+1. cd Backend
+2. cd face-det-cosine-similarity-main
+3. conda activate retina3
+4. uvicorn live_detect:app --reload
+
+Power Shell
+
+1. cd Frontend
+2. npm run dev
+
+
