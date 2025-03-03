@@ -55,5 +55,3 @@ Power Shell
 
 1. cd Frontend
 2. npm run dev
-
-
